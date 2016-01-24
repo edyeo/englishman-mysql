@@ -9,7 +9,8 @@ var config = {
       name: 'englishman_mysql'
     },
     port: 3000,
-    db: 'mysql://root@localhost/englishman_dev'
+    db: 'mysql://root@localhost/englishman_dev',
+    sequelizeConnURL: 'mysql://root@localhost:3306/englishman_dev'
   },
 
   test: {

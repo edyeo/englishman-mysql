@@ -3,12 +3,12 @@ var express = require('express'),
   fs = require('fs'),
   config = require('./config/config');
 
-orm.db = orm.connect(config.db, function(err, db){
-  if(err){
-    console.log("Something is wrong with the connection", err);
-    return ;
-  }
-});
+//orm.db = orm.connect(config.db, function(err, db){
+//  if(err){
+//    console.log("Something is wrong with the connection", err);
+//    return ;
+//  }
+//});
 
 var modelsPath = __dirname + '/app/models';
 fs.readdirSync(modelsPath).forEach(function (file) {

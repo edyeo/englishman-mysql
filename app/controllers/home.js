@@ -1,19 +1,28 @@
 var _ = require('lodash');
+console.log(__dirname);
+var db = require('../models/englishman').db;
+//var db = require('orm').db,
+//  User = db.models.user;
+//  Language = db.models.language;
+//  Article = db.models.article;
+//  Sentence = db.models.sentence;
+//  Word = db.models.word;
 
-var db = require('orm').db,
-  User = db.models.user;
+
+
+var User = db.models.user;
   Language = db.models.language;
+  ArticleNo = db.models.articleNo;
   Article = db.models.article;
   Sentence = db.models.sentence;
   Word = db.models.word;
 
+var sequelize = db.sequelize;
+
 exports.index = function(req, res){
-  User.find(function(err, articles){
-    if(err) throw new Error(err);
-    res.render('home/index', {
-      title: 'Generator-Express MVC',
-      articles: articles
-    });
+  User.findAll({where:{id:1}}).then(function(users){
+    console.log(users);
+    res.json({result:"ok"});
   });
 };
 
@@ -35,86 +44,81 @@ exports.insert = function(req,res){
   }
   };*/
 
-  var article = req.body;
+  var articleReq = req.body;
+  console.log(articleReq);
 
-  Article.create({
-    language_id:article.from.langId,
-    title:article.from.title,
-    author:article.from.author,
-    contributor_id:article.from.contributorId
-  },function(err,item) {
-    if (err) throw err;
 
-    var fromSTCarr = _.map(article.from.sentences, function (stc, idx) {
-      return {order: idx, sentence: stc, language_id: article.from.langId, article_id: item.id}
-    });
 
-    Sentence.create(fromSTCarr, function (err, items) {
-      _.map(items, function (item, idx) {
-        var words = item.sentence.match(/(\w+)\W/g);
+  registerNewArticle(articleReq,"from");
+  //registerNewArticle(articleReq,"to");
 
-        var wordArr = _.map(words, function (word, idx) {
-          return {word: word, language_id: article.from.langId}
-        });
+  function registerNewArticle(articleReq,type){
 
-        _.map(wordArr, function (wordObj, idx) {
-          Word.count({word: wordObj.word}, function (err, cnt) {
-            if (err) throw err;
-            if (cnt > 0) {
-              Word.create(wordArr, function (words, idx) {
-                return true;
-              })
-            }
+
+    sequelize.transaction(function(t){
+      return ArticleNo.create({}).then(function(articleNo){
+          return Article.create({
+            languageId:articleReq[type].langId,
+            title:articleReq[type].title,
+            author:articleReq[type].author,
+            contributor_id:articleReq[type].contributorId,
+            articleNoId: articleNo.id
           });
+        })
+        .then(function(article){
+          return updateSentencesByArticle(articleReq,type,article)
+        })
+        .then(function(sentences){
+          return updateWordsBySentences(articleReq,type,sentences);
+        })
+        .then(function(result){
+          res.json({});
+        })
+        .catch(function(err){
+          throw err;
+          res.json({result:error});
         });
-
-      })
     });
-  });
+  }
 
-  Article.create({
-    language_id:article.to.langId,
-    title:article.to.title,
-    author:article.to.author,
-    contributor_id:article.from.contributorId
-  },function(err,item) {
-    if (err) throw err;
 
-    Word.create({word:"123",language_id:2},function(err,items){
-      if(err) throw err;
+  function updateSentencesByArticle(articleReq,type,article){
+    var fromSTCarr = _.map(articleReq[type].sentences, function (stc, idx) {
+      return {order: idx, sentence: stc, languageId: articleReq[type].langId, articleId: article.id}
     });
 
-    var fromSTCarr = _.map(article.from.sentences, function (stc, idx) {
-      return {order: idx, sentence: stc, language_id: article.from.langId, article_id: item.id}
-    });
-
-    var toSTCarr = _.map(article.to.sentences, function (stc, idx) {
-      return {order: idx, sentence: stc, language_id: article.to.langId, article_id: item.id}
-    });
-
-    Sentence.create(toSTCarr, function (err, items) {
-      _.map(items, function (item, idx) {
-        var words = item.sentence.match(/(\w+)\W/g);
-
-        var wordArr = _.map(words, function (word, idx) {
-          return {word: word, language_id: article.to.langId}
-        });
-
-        _.map(wordArr, function (wordObj, idx) {
-          Word.count({word: wordObj.word}, function (err, cnt) {
-            if (err) throw err;
-            if (cnt > 0) {
-              Word.create(wordArr, function (words, idx) {
-                return true;
-              })
-            }
-          });
-        });
-
+    var sentenceObjs = Sentence.bulkCreate(fromSTCarr,{returning: true})
+      .then(function(){
+        return Sentence.findAll(
+          {where:{
+            languageId:articleReq[type].langId,
+            articleId:article.id
+          }});
       });
-    });
-  });
 
-  res.json({});
+    return sentenceObjs;
+  }
+
+  function updateWordsBySentences(articleReq,type,sentences){
+    var promises = _.map(sentences, function (sentence, idx) {
+      var wordStrArr = sentence.sentence.match(/(\w+)\W/g);
+      var wordObjs = _.map(wordStrArr, function (wordStr, idx) {
+        return {word: wordStr, languageId: articleReq[type].langId}
+      });
+
+      Word.bulkCreate(wordObjs, {
+        ignoreDuplicates: true
+      })
+        .then(function(words){
+          return Word.findAll({word:{$in:words}});
+        })
+        .then(function(words){
+          sentence.addWords(words);
+        });
+
+    });
+
+    return Promise.all(promises);
+  }
 
 }

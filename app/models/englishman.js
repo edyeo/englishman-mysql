@@ -1,72 +1,108 @@
-var db = require('orm').db;
+config = require('./../../config/config');
 
+var Sequelize = require('sequelize');
+var sequelize = new Sequelize(config.sequelizeConnURL);
 
-var Language = db.define('language', {
-  id: { type: 'integer' },
-  name: String
-}, {
-  methods: {
-    example: function(){
-      // return example;
-    }
+var Language = sequelize.define('language', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  name: {
+    type: Sequelize.STRING,
+    unique: true
   }
-});
+},{ timestamps:false });
 
-var Article = db.define('article',{
-  id: { type:'integer'},
-  language_id: {type:'integer'},
-  title: String,
-  author: String,
-  contributor_id: String
-})
-
-var Sentence = db.define('sentence', {
-  id: { type: 'integer' },
-  order: { type: 'integer' },
-  sentence: String,
-  language_id: { type: 'integer' },
-  article_id: { type: 'integer' }
-}, {
-  methods: {
-    example: function(){
-      // return example;
-    }
+var ArticleNo = sequelize.define('article_no',{
+  id: {
+    type:Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   }
-});
+},{ timestamps:false });
+
+var Article = sequelize.define('article',{
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  title: {type:Sequelize.STRING},
+  author: {type:Sequelize.STRING},
+  contributor_id: {type:Sequelize.STRING}
+},{ timestamps:false });
+
+var Sentence = sequelize.define('sentence', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  order: { type: Sequelize.INTEGER },
+  sentence: { type: Sequelize.STRING }
+},{ timestamps:false });
 
 
-var User = db.define('user', {
-  id: { type: 'integer' },
-  name: String
-}, {
-  methods: {
-    example: function(){
-      // return example;
-    }
+var User = sequelize.define('user', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  name: { type: Sequelize.STRING }
+},{ timestamps:false });
+
+
+var Word = sequelize.define('word', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  word: {
+    type: Sequelize.STRING,
+    unique: true
   }
+},{ timestamps:false });
+
+var UserWord = sequelize.define('user_word',{
+  status: {type:Sequelize.INTEGER}
+},{ timestamps:false });
+
+var SentenceWord = sequelize.define('sentence_word',{
+},{ timestamps:false });
+
+Language.hasMany(Article,{as:"lang_id", underscored: true});
+Language.hasMany(Sentence,{as:"lang_id", underscored: true});
+Language.hasMany(Word,{as:"lang_id"});
+
+ArticleNo.hasMany(Article);
+Article.hasMany(Sentence);
+
+User.belongsToMany(Word,{through:UserWord, underscored: true});
+Sentence.belongsToMany(Word,{through:SentenceWord, underscored: true});
+
+sequelize.sync().then(function(err,result) {
+  console.log("sequelize synced!!")
+}).catch(function(error) {
+  throw error;
 });
 
 
-var Word = db.define('word', {
-  id: { type: 'integer' },
-  word: String,
-  language_id: { type: 'integer' }
-}, {
-  methods: {
-    example: function(){
-      // return example;
-    }
-  }
-});
-
-Article.hasOne('language',Language);
-Sentence.hasOne('language',Language);
-Word.hasOne('language',Language);
-
-User = User.hasMany('word',Word,{status:'integer'},{reverse:'users',key:true});
-Word = Word.hasMany('sentences',Sentence,{},{reverse:'words',key:true});
+exports.db = {
+  models : {
+    user: User,
+    language: Language,
+    article: Article,
+    articleNo: ArticleNo,
+    sentence: Sentence,
+    word: Word,
+    userword : UserWord
+  },
+  sequelize : sequelize
+};
 
 
-db.sync(function(){
-  console.log('DB SYNCHED');
-});
+
