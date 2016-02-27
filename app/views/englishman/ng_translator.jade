@@ -1,0 +1,51 @@
+#translation-container
+  #control-container
+    button.btn(type='button' ng-click='vm.submitArticle()' ) submit
+  #article-form
+    #from-container
+      #language
+        span.label.label-default Language
+        select(name='languageSelect' ng-model='vm.article.from.langId')
+          option(ng-repeat='language in vm.languages' value='{{language.id}}') {{language.name}}
+      #title
+        span.label.label-default Title
+        input(type='text')
+      #author
+        input(type='text')
+      #sentences-container
+        #sentences-controller
+          span.label.label-default Sentences
+          button.btn(type='button' ng-click='vm.addSentenceBox("from")') +
+          button.btn(type='button' ng-click='vm.removeSentenceBox("from")') -
+        #sentences(ng-repeat='sentence in vm.article.from.sentences track by $index')
+          input(type='text' ng-model='vm.article.from.sentences[$index]' min-length=1 ng-trim='boolean')
+    #to-container
+      #language
+        span.label.label-default Language
+        select(name='languageSelect' ng-model='vm.article.to.langId')
+          option(ng-repeat='language in vm.languages' value='{{language.id}}') {{language.name}}
+      #title
+        span.label.label-default Title
+        input(type='text')
+      #author
+        input(type='text')
+      #sentences-container
+        #sentences-controller
+          span.label.label-default Sentences
+          button.btn(type='button' ng-click='vm.addSentenceBox("to")') +
+          button.btn(type='button' ng-click='vm.removeSentenceBox("to")') -
+        #sentences(ng-repeat='sentence in vm.article.to.sentences track by $index')
+          input(type='text' ng-model='vm.article.to.sentences[$index]' min-length=1 ng-trim='boolean')
+
+style.
+  #translation-container{
+    display: flex;
+    flex-direction: column;
+  }
+
+  #article-form{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;212
+    padding: 10px 10px 5px 5px;
+  }

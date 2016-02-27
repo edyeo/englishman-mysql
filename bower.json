@@ -5,5 +5,10 @@
     "**/.*",
     "node_modules",
     "components"
-  ]
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.4.9",
+    "angular-ui-bootstrap": "~1.1.2",
+    "angular-ui-router": "~0.2.17"
+  }
 }

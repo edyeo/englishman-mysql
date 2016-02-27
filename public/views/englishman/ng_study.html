@@ -1,0 +1,19 @@
+
+<div id="study-container">
+  <div id="ctrl-box1">
+    <button ng-click="vm.sentenceToStudyObj.prev()" class="btn-default">prev</button>
+    <button ng-click="vm.sentenceToStudyObj.next()" class="btn-default">next</button>
+  </div>
+  <div ng-repeat="word in vm.sentenceToStudyObj.sentenceToStudy.words" ng-click="vm.selectWord(word)" ng-class="word.isSelected ? 'selected' : 'unselected'" class="word-box">{{ word.word }}</div>
+  <div id="ctrl-box">
+    <button ng-click="vm.registerUserWordRelation()" class="btn-default">submit</button>
+  </div>
+</div>
+<style>
+  .selected{
+    background-color: red;
+  }
+  
+  .unselected{
+  }
+</style>

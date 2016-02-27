@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<body ng-class="[bodyClass]" ng-cloak class="ng-cloak">
+  <div id="main-wrapper" style="padding: 0;">
+    <div ui-view="navigator" class="nav-view"></div>
+  </div>
+  <script type="text/javascript" src="components/angular/angular.js"></script>
+  <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
+  <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script type="text/javascript" src="components/visionmedia-debug/dist/debug.js"></script>
+  <script type="text/javascript" src="components/lodash/dist/lodash.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css"/>
+  <!--+component_css("angular-bootstrap","ui-bootstrap-csp.css")-->
+  <script type="text/javascript" src="js/services/ng_api_language.js"></script>
+  <script type="text/javascript" src="js/services/ng_api_article.js"></script>
+  <script type="text/javascript" src="js/services/ng_api_user.js"></script>
+  <script type="text/javascript" src="js/services/ng_api_recommend_sentence.js"></script>
+  <script type="text/javascript" src="js/services/ng_api_relation_user_word.js"></script>
+  <script type="text/javascript" src="js/controllers/ng_engman_app.js"></script>
+  <script type="text/javascript" src="js/controllers/ng_translator_ctrl.js"></script>
+  <script type="text/javascript" src="js/controllers/ng_study_sentence_ctrl.js"></script>
+</body>
+<html lang="kr" ng-app="engman" class="gt-ie8 gt-ie9 not-ie pxajs"></html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <meta name="description" content="SK Planet EDA explorering tool">
+  <meta name="author" conent="SK Planet Data Infrastructure">
+  <title>Engilish Man in YouWork</title>
+  <!--+component_css("bower", "fontawesome/css/font-awesome.min.css")-->
+</head>
+<body>
+  <div id="nav" ui-view="nav"></div>
+</body>
+<style></style>

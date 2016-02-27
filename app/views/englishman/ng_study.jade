@@ -1,0 +1,22 @@
+#study-container
+  #ctrl-box1
+    button.btn-default(ng-click='vm.sentenceToStudyObj.prev()') prev
+    button.btn-default(ng-click='vm.sentenceToStudyObj.next()') next
+
+  .word-box(
+    ng-repeat='word in vm.sentenceToStudyObj.sentenceToStudy.words'
+    ng-click='vm.selectWord(word)'
+    ng-class="word.isSelected ? 'selected' : 'unselected'"
+  ) {{ word.word }}
+
+  #ctrl-box
+    button.btn-default(ng-click='vm.registerUserWordRelation()') submit
+
+style.
+  .selected{
+    background-color: red;
+  }
+
+  .unselected{
+  }
+

@@ -17,6 +17,21 @@ module.exports = function (grunt) {
         file: 'app.js'
       }
     },
+    jade: {
+      compile: {
+        options: {
+          client: false,
+          pretty: true
+        },
+        files: [ {
+          cwd: "app/views",
+          src: "**/*.jade",
+          dest: "public/views",
+          expand: true,
+          ext: ".html"
+        } ]
+      }
+    },
     watch: {
       options: {
         nospawn: true,
@@ -38,10 +53,13 @@ module.exports = function (grunt) {
       },
       jade: {
         files: ['app/views/**/*.jade'],
-        options: { livereload: reloadPort }
+        tasks: ['jade']
       }
+
     }
   });
+
+
 
   grunt.config.requires('watch.js.files');
   files = grunt.config('watch.js.files');
@@ -61,5 +79,5 @@ module.exports = function (grunt) {
     }, 500);
   });
 
-  grunt.registerTask('default', ['develop', 'watch']);
+  grunt.registerTask('default', ['develop', 'watch', 'jade']);
 };

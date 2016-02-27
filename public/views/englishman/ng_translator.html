@@ -1,0 +1,65 @@
+
+<div id="translation-container">
+  <div id="control-container">
+    <button type="button" ng-click="vm.submitArticle()" class="btn">submit</button>
+  </div>
+  <div id="article-form">
+    <div id="from-container">
+      <div id="language"><span class="label label-default">Language</span>
+        <select name="languageSelect" ng-model="vm.article.from.langId">
+          <option ng-repeat="language in vm.languages" value="{{language.id}}">{{language.name}}</option>
+        </select>
+      </div>
+      <div id="title"><span class="label label-default">Title</span>
+        <input type="text"/>
+      </div>
+      <div id="author">
+        <input type="text"/>
+      </div>
+      <div id="sentences-container">
+        <div id="sentences-controller"><span class="label label-default">Sentences</span>
+          <button type="button" ng-click="vm.addSentenceBox(&quot;from&quot;)" class="btn">+</button>
+          <button type="button" ng-click="vm.removeSentenceBox(&quot;from&quot;)" class="btn">-</button>
+        </div>
+        <div id="sentences" ng-repeat="sentence in vm.article.from.sentences track by $index">
+          <input type="text" ng-model="vm.article.from.sentences[$index]" min-length="1" ng-trim="boolean"/>
+        </div>
+      </div>
+    </div>
+    <div id="to-container">
+      <div id="language"><span class="label label-default">Language</span>
+        <select name="languageSelect" ng-model="vm.article.to.langId">
+          <option ng-repeat="language in vm.languages" value="{{language.id}}">{{language.name}}</option>
+        </select>
+      </div>
+      <div id="title"><span class="label label-default">Title</span>
+        <input type="text"/>
+      </div>
+      <div id="author">
+        <input type="text"/>
+      </div>
+      <div id="sentences-container">
+        <div id="sentences-controller"><span class="label label-default">Sentences</span>
+          <button type="button" ng-click="vm.addSentenceBox(&quot;to&quot;)" class="btn">+</button>
+          <button type="button" ng-click="vm.removeSentenceBox(&quot;to&quot;)" class="btn">-</button>
+        </div>
+        <div id="sentences" ng-repeat="sentence in vm.article.to.sentences track by $index">
+          <input type="text" ng-model="vm.article.to.sentences[$index]" min-length="1" ng-trim="boolean"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #translation-container{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #article-form{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;212
+    padding: 10px 10px 5px 5px;
+  }
+</style>

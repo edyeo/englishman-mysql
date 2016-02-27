@@ -1,7 +1,7 @@
 config = require('./../../config/config');
 
 var Sequelize = require('sequelize');
-var sequelize = new Sequelize(config.sequelizeConnURL);
+var sequelize = new Sequelize(config.sequelizeConnURL,{charset:'utf8'});
 
 var Language = sequelize.define('language', {
   id: {
@@ -41,7 +41,8 @@ var Sentence = sequelize.define('sentence', {
     autoIncrement: true
   },
   order: { type: Sequelize.INTEGER },
-  sentence: { type: Sequelize.STRING }
+  sentence: { type: Sequelize.STRING },
+  difficulty: { type: Sequelize.DOUBLE }
 },{ timestamps:false });
 
 
@@ -51,7 +52,8 @@ var User = sequelize.define('user', {
     primaryKey: true,
     autoIncrement: true
   },
-  name: { type: Sequelize.STRING }
+  name: { type: Sequelize.STRING },
+  level: { type: Sequelize.DOUBLE }
 },{ timestamps:false });
 
 
@@ -64,7 +66,9 @@ var Word = sequelize.define('word', {
   word: {
     type: Sequelize.STRING,
     unique: true
-  }
+  },
+  difficulty: { type: Sequelize.DOUBLE }
+
 },{ timestamps:false });
 
 var UserWord = sequelize.define('user_word',{
@@ -79,10 +83,12 @@ Language.hasMany(Sentence,{as:"lang_id", underscored: true});
 Language.hasMany(Word,{as:"lang_id"});
 
 ArticleNo.hasMany(Article);
+ArticleNo.hasMany(Sentence);
 Article.hasMany(Sentence);
 
 User.belongsToMany(Word,{through:UserWord, underscored: true});
 Sentence.belongsToMany(Word,{through:SentenceWord, underscored: true});
+
 
 sequelize.sync().then(function(err,result) {
   console.log("sequelize synced!!")
